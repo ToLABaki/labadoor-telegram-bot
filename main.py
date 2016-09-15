@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import telepot
 from api_key import *
 from exceptions import *
@@ -210,15 +212,16 @@ class FSM:
             bot.sendMessage(chat_id,'Invalid token', reply_markup=markup)
 
 
+if __name__ == "__main__":
 
-# DelegatorBot creates a new instance of the FSM for each conversation.
-bot = telepot.DelegatorBot(API_KEY,[
-    pave_event_space()(
-        per_chat_id(), create_open, FSM, timeout=10)
-    ])
-bot.message_loop()
+    # DelegatorBot creates a new instance of the FSM for each conversation.
+    bot = telepot.DelegatorBot(API_KEY,[
+        pave_event_space()(
+            per_chat_id(), create_open, FSM, timeout=10)
+        ])
+    bot.message_loop()
 
-# This loop is necessary; we have to keep running because message_loop() is
-# waiting to accept messages.
-while True:
-    pass
+    # This loop is necessary; we have to keep running because message_loop() is
+    # waiting to accept messages.
+    while True:
+        pass
