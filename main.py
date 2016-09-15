@@ -4,7 +4,7 @@ import telepot
 from api_key import *
 from exceptions import *
 from labatoken import *
-from users import *
+from labaperson import *
 from vars import *
 
 

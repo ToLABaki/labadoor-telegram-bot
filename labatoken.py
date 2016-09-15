@@ -1,6 +1,6 @@
 import telepot
 import uuid
-from users import *
+from labaperson import *
 
 class Labatoken:
     # Generate a new token.
