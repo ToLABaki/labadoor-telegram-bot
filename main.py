@@ -74,7 +74,7 @@ class FSM:
             self.set_state(state.start)
 
         elif self.get_state() == state.start:
-            start()
+            self.start()
 
     # Welcome messages, sent when user start a chat with the bot (/start).
     def welcome(bot, chat_id):
@@ -100,7 +100,7 @@ class FSM:
                     self.set_state(deltoken(db, bot, chat_id))
 
                 elif cmd == '/tokens':
-                    ShowTokens(db, bot, chat_id)
+                    self.ShowTokens(db, bot, chat_id)
 
                 elif cmd == '/adduser':
                     self.set_state(adduser(db, bot, chat_id))
@@ -109,7 +109,7 @@ class FSM:
                     self.set_state(deluser(db, bot, chat_id))
 
                 elif cmd == '/users':
-                    ShowUsers(db, bot, chat_id)
+                    self.ShowUsers(db, bot, chat_id)
                     self.set_state(state.start)
 
                 elif cmd == '/lock':
@@ -132,9 +132,9 @@ class FSM:
                 bot.sendMessage(chat_id, e.string, reply_markup=markup)
                 
     def adduser(db, bot, chat_id):
-        st = state.start
+        self.set_state(state.start)
         if is_admin(db, chat_id):
-            st = state.adduser
+            self.set_state(state.adduser)
             bot.sendMessage(chat_id, str_adduser, reply_markup=markup)
         else:
             raise EditUsersException
@@ -142,9 +142,9 @@ class FSM:
 
     def deluser(db, bot, chat_id):
         global st
-        st = state.start
+        self.set_state(state.start)
         if is_admin(db, chat_id):
-            st = state.deluser
+            self.set_state(state.deluser)
             bot.sendMessage(chat_id, str_deluser, reply_markup=markup)
         else:
             raise EditUsersException
@@ -152,10 +152,10 @@ class FSM:
 
     # Ask the user for the token they want to delete.
     def deltoken(db, bot, chat_id):
-        st = state.start
+        self.set_state(state.start)
         if is_user(db, chat_id):
             bot.sendMessage(chat_id, str_deltoken, reply_markup=markup)
-            st = state.deltoken
+            self.set_state(state.deltoken)
         else:
             raise EditTokensException
         return st
@@ -198,10 +198,10 @@ class FSM:
         if is_user(db, chat_id):
             bot.sendMessage(chat_id,'Open', reply_markup=markup)
             # Replace this comment with the command that actually opens the door
-            st = state.start
+            self.set_state(state.start)
         else:
             bot.sendMessage(chat_id, str_guestoops, reply_markup=markup)
-            st = state.guestopen
+            self.set_state(state.guestopen)
         return st
 
     # Open the door if the provided access token is correct.
