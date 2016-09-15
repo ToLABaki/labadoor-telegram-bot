@@ -1,7 +1,4 @@
 from vars import *
-from functions import *
-from exceptions import *
-from users import *
 
 class Labaperson:
     def __init__(self, id):
