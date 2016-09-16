@@ -38,7 +38,7 @@ class FSM(telepot.helper.ChatHandler):
         # Set keyboard depending on the role of the user.
         if self.get_person().is_admin(db):
             markup = keyboard_admin
-        if self.get_person().is_user(db):
+        elif self.get_person().is_user(db):
             markup = keyboard_user
         else:
             markup = keyboard_guest
@@ -140,7 +140,7 @@ class FSM(telepot.helper.ChatHandler):
                 else:
                     print(cmd,st)
             except LabadoorBotException as e:
-                bot.sendMessage(self.get_person().get_id(), e.string, reply_markup=markup)
+                bot.sendMessage(self.get_person().get_id(), e.get_string(), reply_markup=markup)
                 
     def adduser(self, db, bot):
         self.set_state(state.start)
