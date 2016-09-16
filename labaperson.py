@@ -13,7 +13,7 @@ class Labaperson:
         for user in User.select().where(User.uid == self.get_id()):
             found = user.admin
         db.close() 
-        return role
+        return found
 
     def is_user(self, db):
         found = False

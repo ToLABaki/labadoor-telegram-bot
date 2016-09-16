@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import telepot
+from telepot.delegate import pave_event_space, per_chat_id, create_open
+from time import sleep
 from api_key import *
 from exceptions import *
 from labatoken import *
@@ -8,14 +10,15 @@ from labaperson import *
 from vars import *
 
 
-class FSM:
-    def __init__(self):
+class FSM(telepot.helper.ChatHandler):
+    def __init__(self, *args, **kwargs):
+        super(FSM, self).__init__(*args, **kwargs)
         self._state = state.start
         
     def set_state(self, state):
         self._state = state
 
-    def get_state(self, state):
+    def get_state(self):
         return self._state
 
     def set_person(self, person):
@@ -81,30 +84,31 @@ class FSM:
             self.set_state(state.start)
 
         elif self.get_state() == state.start:
-            self.start()
+            self.start(cmd)
 
     # Welcome messages, sent when user start a chat with the bot (/start).
-    def welcome(bot):
+    def welcome(self, bot):
         global welcome_messages
         for msg in welcome_messages:
-            bot.sendMessage(self.get_person().get_id, msg, reply_markup=keyboard_hide)
+            bot.sendMessage(self.get_person().get_id(), msg, 
+                    reply_markup=keyboard_hide)
             sleep(3)
 
 
-    def start():
+    def start(self, cmd):
             try:
                 if cmd == '/start':
                     self.welcome(bot)
 
                 elif cmd == '/open':
-                    self.set_state(open(db, bot, None))
+                    self.set_state(self.OpenDoor(db, bot, None))
 
                 elif cmd == '/gettoken':
                     gettoken(db, bot, self.get_person().get_id())
                     self.set_state(state.start)
 
                 elif cmd == '/deltoken':
-                    self.set_state(deltoken(db, bot, self.get_person().get_id()))
+                    self.set_state(self.deltoken(db, bot, self.get_person().get_id()))
 
                 elif cmd == '/tokens':
                     self.ShowTokens(db, bot)
@@ -138,7 +142,7 @@ class FSM:
             except LabadoorBotException as e:
                 bot.sendMessage(self.get_person().get_id(), e.string, reply_markup=markup)
                 
-    def adduser(db, bot):
+    def adduser(self, db, bot):
         self.set_state(state.start)
         if self.get_person().is_admin(db):
             self.set_state(state.adduser)
@@ -147,7 +151,7 @@ class FSM:
             raise EditUsersException
         return st
 
-    def deluser(db, bot, chat_id):
+    def deluser(self, db, bot, chat_id):
         global st
         self.set_state(state.start)
         if self.get_person().is_admin(db):
@@ -158,7 +162,7 @@ class FSM:
         return st
 
     # Ask the user for the token they want to delete.
-    def deltoken(db, bot, chat_id):
+    def deltoken(self, db, bot, chat_id):
         self.set_state(state.start)
         if self.get_person().is_user(db):
             bot.sendMessage(self.get_person().get_id(), str_deltoken, reply_markup=markup)
@@ -168,7 +172,7 @@ class FSM:
         return st
 
     # Print a list of all the users.
-    def ShowUsers(db, bot):
+    def ShowUsers(self, db, bot):
         if self.get_person().is_admin(db):
             db.connect()
             users = User.select()
@@ -182,7 +186,7 @@ class FSM:
             raise ShowUsersException
 
     # Print all valid tokens
-    def ShowTokens(db, bot):
+    def ShowTokens(self, db, bot):
         if self.get_person().is_admin(db):
             db.connect()
             tokens = Token.select().where(Token.valid==True)
@@ -200,7 +204,7 @@ class FSM:
     # If a user tries to open the door, open it.
     # However, if a non-user wants to open the door, change the state in order
     # to ask for an access token.
-    def open(db, bot, token):
+    def OpenDoor(self, db, bot, token):
         global markup
         if self.get_person().is_user(db):
             bot.sendMessage(self.get_person().get_id(),'Open', reply_markup=markup)
@@ -212,7 +216,7 @@ class FSM:
         return st
 
     # Open the door if the provided access token is correct.
-    def guest_open(db, bot, token):
+    def guest_open(self, db, bot, token):
         if auth_token(db, token):
             bot.sendMessage(self.get_person().get_id(),'Open', reply_markup=markup)
         else:
