@@ -234,4 +234,4 @@ if __name__ == "__main__":
     # This loop is necessary; we have to keep running because message_loop() is
     # waiting to accept messages.
     while True:
-        pass
+        sleep(1)
