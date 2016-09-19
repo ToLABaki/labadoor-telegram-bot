@@ -14,7 +14,7 @@ welcome_messages = [
 "This bot helps us open the door at τοLabάκι hackerspace.",
 "You need to be registered by an admin in order to use the bot.",
 "Alternatively, you can also get a one-time access password from a registered \
-        member.",
+member.",
 "For more info, you can visit http://wiki.tolabaki.gr/w/To_LABaki",
 "Enjoy your stay!"
 ]
@@ -41,7 +41,7 @@ keyboard_hide = ReplyKeyboardHide(hide_keyboard=True)
 markup = keyboard_admin
 
 class state(Enum):
-    start, deltoken, guestopen, lockdown, wrongpassword, adduser, 
+    start, deltoken, guestopen, lockdown, wrongpassword, adduser, \
     deluser = range(7)
 
 st = state.start
