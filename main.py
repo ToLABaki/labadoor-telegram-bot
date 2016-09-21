@@ -89,11 +89,12 @@ class FSM(telepot.helper.ChatHandler):
     # Welcome messages, sent when user start a chat with the bot (/start).
     def welcome(self, bot):
         global welcome_messages
-        for msg in welcome_messages:
+        for msg in welcome_messages[0:5]:
             bot.sendMessage(self.get_person().get_id(), msg, 
                     reply_markup=keyboard_hide)
             sleep(3)
-
+        bot.sendMessage(self.get_person().get_id(), welcome_messages[5],
+                    reply_markup=markup)
 
     def start(self, cmd):
             try:
