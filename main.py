@@ -65,7 +65,7 @@ class FSM(telepot.helper.ChatHandler):
 
 
         elif self.get_state() == state.adduser:
-            if add_user(db, cmd):
+            if self.get_person().add_user(db, cmd):
                 bot.sendMessage(self.get_person().get_id(), 'User ' + cmd + 
                         ' added.', reply_markup=markup)
             else:
@@ -75,7 +75,7 @@ class FSM(telepot.helper.ChatHandler):
 
 
         elif self.get_state() == state.deluser:
-            if del_user(db, cmd):
+            if self.get_person().del_user(db, cmd):
                 bot.sendMessage(self.get_person().get_id(), 'User ' + cmd + 
                         ' deleted.', reply_markup=markup)
             else:
@@ -114,10 +114,10 @@ class FSM(telepot.helper.ChatHandler):
                     self.ShowTokens(db, bot)
 
                 elif cmd == '/adduser':
-                    adduser(db, bot)
+                    self.adduser(db, bot)
 
                 elif cmd == '/deluser':
-                    deluser(db, bot)
+                    self.deluser(db, bot)
 
                 elif cmd == '/users':
                     self.ShowUsers(db, bot)
