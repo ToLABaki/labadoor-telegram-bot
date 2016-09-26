@@ -51,7 +51,6 @@ db = SqliteDatabase(DB_PATH)
 
 class Token(Model):
     token = CharField()
-    valid = BooleanField()
 
     class Meta:
         database=db

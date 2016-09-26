@@ -55,7 +55,7 @@ class FSM(telepot.helper.ChatHandler):
 
 
         elif self.get_state() == state.deltoken:
-            if delete_token(db, cmd):
+            if Labatoken.del_token(db, cmd):
                 bot.sendMessage(self.get_person().get_id(), 'Token ' + cmd + 
                         ' deleted.', reply_markup=markup)
             else:
@@ -105,7 +105,9 @@ class FSM(telepot.helper.ChatHandler):
                     self.OpenDoor(db, bot, None)
 
                 elif cmd == '/gettoken':
-                    gettoken(db, bot, self.get_person().get_id())
+                    token = Labatoken.gen_token(db)
+                    bot.sendMessage(self.get_person().get_id(), token, reply_markup=markup)
+                    Labatoken.add_token(db, token)
                     self.set_state(state.start)
 
                 elif cmd == '/deltoken':
@@ -189,7 +191,7 @@ class FSM(telepot.helper.ChatHandler):
     def ShowTokens(self, db, bot):
         if self.get_person().is_admin(db):
             db.connect()
-            tokens = Token.select().where(Token.valid==True)
+            tokens = Token.select()
             if tokens.count()==0:
                 bot.sendMessage(self.get_person().get_id(), "No tokens", reply_markup=markup)
             else:

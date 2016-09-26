@@ -4,21 +4,21 @@ from labaperson import *
 
 class Labatoken:
     # Generate a new token.
-    def gettoken(db, bot, chat_id):
-        if is_user(db, chat_id):
+    def gen_token(db):
+        token = str(uuid.uuid4())
+        # Prevent saving the same token twice.
+        while Labatoken.auth_token(db, token):
             token = str(uuid.uuid4())
-            # Prevent saving the same token twice.
-            while auth_token(db, token):
-                token = str(uuid.uuid4())
-            bot.sendMessage(chat_id, token, reply_markup=markup)
-            db.connect()
-            Token(token=token, valid=True).save()
-            db.close()
-        else:
-            raise EditTokensException
+        return token
 
-    # Delete a given token.
-    def delete_token(db, token):
+    # Add token to database.
+    def add_token(db, token):
+        db.connect()
+        Token(token=token).save()
+        db.close()
+
+    # Delete token from database.
+    def del_token(db, token):
         found = False
         db.connect()
         for token in Token.select().where(Token.token==str(token)):
@@ -28,13 +28,12 @@ class Labatoken:
         db.close() 
         return found
 
-    # Authenticate a user by the provided token.
+    # Check if the token exists on the database.
     def auth_token(db, token):
         authenticated = False
         db.connect()
-        if Token.select().where(Token.token==str(token), Token.valid == True).exists():
+        if Token.select().where(Token.token==str(token)).exists():
             authenticated = True
-            Token.update(valid=False).where(Token.token==str(token)).execute()
         db.close()
         return authenticated
 
