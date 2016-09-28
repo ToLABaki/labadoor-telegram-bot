@@ -44,6 +44,52 @@ class FSM(telepot.helper.ChatHandler):
             markup = keyboard_guest
 
 
+        try:
+            if cmd == '/start':
+                self.welcome(bot)
+
+            elif cmd == '/open':
+                self.OpenDoor(db, bot, None)
+
+            elif cmd == '/gettoken':
+                token = Labatoken.gen_token(db)
+                bot.sendMessage(self.get_person().get_id(), token, reply_markup=markup)
+                Labatoken.add_token(db, token)
+
+            elif cmd == '/deltoken':
+                self.deltoken(db, bot, self.get_person().get_id())
+
+            elif cmd == '/tokens':
+                self.ShowTokens(db, bot)
+
+            elif cmd == '/adduser':
+                self.adduser(db, bot)
+
+            elif cmd == '/deluser':
+                self.deluser(db, bot)
+
+            elif cmd == '/users':
+                self.ShowUsers(db, bot)
+
+            elif cmd == '/lock':
+                if self.get_person().is_admin(db):
+                    self.set_state(state.lockdown)
+                else:
+                    bot.sendMessage(self.get_person().get_id(), 
+                            'Only admins can lock the bot.',
+                            reply_markup=markup)
+            elif cmd == '/unlock':
+                if self.get_person().is_admin(db):
+                    self.set_state(state.normal)
+                else:
+                    bot.sendMessage(self.get_person().get_id(), 
+                            'Only admins can unlock the bot.',
+                            reply_markup=markup)
+            else:
+                print(cmd,st)
+        except LabadoorBotException as e:
+            bot.sendMessage(self.get_person().get_id(), e.get_string(), reply_markup=markup)
+
         if self.get_state() == state.lockdown:
             bot.sendMessage(self.get_person().get_id(), str_botdisabled,
                     reply_markup=markup)
@@ -83,8 +129,6 @@ class FSM(telepot.helper.ChatHandler):
                         ': user isn\'t registered', reply_markup=markup)
             self.set_state(state.start)
 
-        elif self.get_state() == state.start:
-            self.start(cmd)
 
     # Welcome messages, sent when user start a chat with the bot (/start).
     def welcome(self, bot):
@@ -96,55 +140,6 @@ class FSM(telepot.helper.ChatHandler):
         bot.sendMessage(self.get_person().get_id(), welcome_messages[5],
                     reply_markup=markup)
 
-    def start(self, cmd):
-            try:
-                if cmd == '/start':
-                    self.welcome(bot)
-
-                elif cmd == '/open':
-                    self.OpenDoor(db, bot, None)
-
-                elif cmd == '/gettoken':
-                    token = Labatoken.gen_token(db)
-                    bot.sendMessage(self.get_person().get_id(), token, reply_markup=markup)
-                    Labatoken.add_token(db, token)
-                    self.set_state(state.start)
-
-                elif cmd == '/deltoken':
-                    self.deltoken(db, bot, self.get_person().get_id())
-
-                elif cmd == '/tokens':
-                    self.ShowTokens(db, bot)
-
-                elif cmd == '/adduser':
-                    self.adduser(db, bot)
-
-                elif cmd == '/deluser':
-                    self.deluser(db, bot)
-
-                elif cmd == '/users':
-                    self.ShowUsers(db, bot)
-                    self.set_state(state.start)
-
-                elif cmd == '/lock':
-                    if self.get_person().is_admin(db):
-                        self.set_state(state.lockdown)
-                    else:
-                        bot.sendMessage(self.get_person().get_id(), 
-                                'Only admins can lock the bot.',
-                                reply_markup=markup)
-                elif cmd == '/unlock':
-                    if self.get_person().is_admin(db):
-                        self.set_state(state.normal)
-                    else:
-                        bot.sendMessage(self.get_person().get_id(), 
-                                'Only admins can unlock the bot.',
-                                reply_markup=markup)
-                else:
-                    print(cmd,st)
-            except LabadoorBotException as e:
-                bot.sendMessage(self.get_person().get_id(), e.get_string(), reply_markup=markup)
-                
     def adduser(self, db, bot):
         st = state.start
         if self.get_person().is_admin(db):
