@@ -13,13 +13,6 @@ from vars import *
 class FSM(telepot.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
         super(FSM, self).__init__(*args, **kwargs)
-        self._state = state.start
-        
-    def set_state(self, state):
-        self._state = state
-
-    def get_state(self):
-        return self._state
 
     def set_person(self, person):
         self._person = person
@@ -97,7 +90,6 @@ class FSM(telepot.helper.ChatHandler):
 
         elif self.get_state() == state.guestopen:
             self.guest_open(db, bot, cmd)
-            self.set_state(state.start)
 
 
         elif self.get_state() == state.deltoken:
@@ -107,7 +99,6 @@ class FSM(telepot.helper.ChatHandler):
             else:
                 bot.sendMessage(self.get_person().get_id(), cmd + 
                         ': token isn\'t registered', reply_markup=markup)
-            self.set_state(state.start)
 
 
         elif self.get_state() == state.adduser:
@@ -117,7 +108,6 @@ class FSM(telepot.helper.ChatHandler):
             else:
                 bot.sendMessage(self.get_person().get_id(), 'User ' + cmd + 
                         ' is already registered.', reply_markup=markup)
-            self.set_state(state.start)
 
 
         elif self.get_state() == state.deluser:
@@ -127,7 +117,6 @@ class FSM(telepot.helper.ChatHandler):
             else:
                 bot.sendMessage(self.get_person().get_id(), cmd + 
                         ': user isn\'t registered', reply_markup=markup)
-            self.set_state(state.start)
 
 
     # Welcome messages, sent when user start a chat with the bot (/start).
@@ -141,32 +130,23 @@ class FSM(telepot.helper.ChatHandler):
                     reply_markup=markup)
 
     def adduser(self, db, bot):
-        st = state.start
         if self.get_person().is_admin(db):
-            st = state.adduser
             bot.sendMessage(self.get_person().get_id(), str_adduser, reply_markup=markup)
         else:
             raise EditUsersException
-        self.set_state(st)
 
     def deluser(self, db, bot):
-        st = state.start
         if self.get_person().is_admin(db):
-            st = state.deluser
             bot.sendMessage(self.get_person().get_id(), str_deluser, reply_markup=markup)
         else:
             raise EditUsersException
-        self.set_state(st)
 
     # Ask the user for the token they want to delete.
     def deltoken(self, db, bot, chat_id):
-        st = state.start
         if self.get_person().is_user(db):
             bot.sendMessage(self.get_person().get_id(), str_deltoken, reply_markup=markup)
-            st = state.deltoken
         else:
             raise EditTokensException
-        self.set_state(st)
 
     # Print a list of all the users.
     def ShowUsers(self, db, bot):
@@ -206,11 +186,8 @@ class FSM(telepot.helper.ChatHandler):
         if self.get_person().is_user(db):
             bot.sendMessage(self.get_person().get_id(),'Open', reply_markup=markup)
             # Replace this comment with the command that actually opens the door
-            st = state.start
         else:
             bot.sendMessage(self.get_person().get_id(), str_guestoops, reply_markup=markup)
-            st = state.guestopen
-        self.set_state(st)
 
     # Open the door if the provided access token is correct.
     def guest_open(self, db, bot, token):
