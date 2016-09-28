@@ -65,7 +65,7 @@ class FSM(telepot.helper.ChatHandler):
 
 
         elif self.get_state() == state.adduser:
-            if self.get_person().add_user(db, cmd):
+            if self.get_person().add_user(db):
                 bot.sendMessage(self.get_person().get_id(), 'User ' + cmd + 
                         ' added.', reply_markup=markup)
             else:
@@ -75,7 +75,7 @@ class FSM(telepot.helper.ChatHandler):
 
 
         elif self.get_state() == state.deluser:
-            if self.get_person().del_user(db, cmd):
+            if self.get_person().del_user(db):
                 bot.sendMessage(self.get_person().get_id(), 'User ' + cmd + 
                         ' deleted.', reply_markup=markup)
             else:
@@ -154,7 +154,7 @@ class FSM(telepot.helper.ChatHandler):
             raise EditUsersException
         self.set_state(st)
 
-    def deluser(self, db, bot, chat_id):
+    def deluser(self, db, bot):
         st = state.start
         if self.get_person().is_admin(db):
             st = state.deluser

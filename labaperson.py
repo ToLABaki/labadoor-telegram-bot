@@ -25,7 +25,7 @@ class Labaperson:
     def add_user(self, db):
         st = False
         db.connect()
-        if not is_user(db, uid):
+        if not self.is_user(db):
             User(uid = self.get_id(), admin=False).save()
             st = True
         db.close()
@@ -34,7 +34,7 @@ class Labaperson:
     def del_user(self, db):
         found = False
         db.connect()
-        if str(uid).isdigit():
+        if str(self.get_id()).isdigit():
             for user in User.select().where(User.uid == self.get_id()):
                 user.delete_instance()
                 found = True
