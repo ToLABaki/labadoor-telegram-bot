@@ -6,10 +6,10 @@ from telepot.namedtuple import ReplyKeyboardMarkup, ReplyKeyboardHide
 from time import sleep
 import peewee
 from peewee import Model, IntegerField, BooleanField, CharField
-from api_key import *
-from exceptions import *
-from labatoken import *
-from labaperson import *
+from .api_key import API_KEY
+from .exceptions import *
+from .labatoken import Labatoken
+from .labaperson import Labaperson
 
 DB_PATH = 'stuff.db'
 
@@ -174,7 +174,6 @@ class FSM(telepot.helper.ChatHandler):
 
     # Welcome messages, sent when user start a chat with the bot (/start).
     def welcome(self, bot):
-        global welcome_messages
         for msg in welcome_messages[0:5]:
             bot.sendMessage(self.get_person().get_id(), msg, 
                     reply_markup=keyboard_hide)
@@ -235,7 +234,6 @@ class FSM(telepot.helper.ChatHandler):
     # However, if a non-user wants to open the door, change the state in order
     # to ask for an access token.
     def OpenDoor(self, db, bot, token):
-        global markup
         if self.get_person().is_user(db):
             bot.sendMessage(self.get_person().get_id(),'Open', reply_markup=markup)
             # Replace this comment with the command that actually opens the door
