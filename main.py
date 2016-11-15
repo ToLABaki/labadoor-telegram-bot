@@ -6,10 +6,10 @@ from telepot.namedtuple import ReplyKeyboardMarkup, ReplyKeyboardHide
 from time import sleep
 import peewee
 from peewee import Model, IntegerField, BooleanField, CharField
-from .api_key import API_KEY
-from .exceptions import *
-from .labatoken import Labatoken
-from .labaperson import Labaperson
+from api_key import API_KEY
+from exceptions import *
+from labatoken import Labatoken
+from labaperson import Labaperson
 
 DB_PATH = 'stuff.db'
 
