@@ -8,23 +8,20 @@ from time import sleep
 
 DB_PATH = 'stuff.db'
 
-str_guestoops = 'Oops, you\'re a guest so you must send me a password now'
-str_heresatoken = 'This code will allow a friend to open the door one time:'
-str_botdisabled = 'The bot is disabled for security reasons.'
-str_deltoken = 'Send me the token you need cancelled.'
-str_adduser = 'Send me the user id you need to register.'
-str_deluser = 'Send me the user id you need to remove.'
-
 welcome_messages = [
     "Oh, hey there!",
     "This bot helps us open the door at τοLabάκι hackerspace.",
-    "You need to be registered by an admin in order to use the bot.",
-    "Alternatively, you can also get a one-time access password from a registered \
-    member.",
+    "You need to have an LDAP account in order to open the door.",
     "For more info, you can visit http://wiki.tolabaki.gr/w/To_LABaki",
     "Enjoy your stay!"
 ]
 
+registration_instructions = [
+        "To open the door, you need to add your Telegram user id to your LDAP \
+account.",
+        "In order to do that, visit https://accounts.tolabaki.gr and add your \
+Telegram User ID under the Fax field, in Generic settings."
+]
 db = peewee.SqliteDatabase(DB_PATH)
 
 class Token(Model):
