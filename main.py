@@ -34,6 +34,10 @@ class Logic(telepot.helper.ChatHandler):
                 bot.sendMessage(telegram_uid, message)
                 sleep(3)
             bot.sendMessage(telegram_uid, welcome_messages[4])
+        elif msg['text'] == "/register":
+            for message in registration_instructions[0:2]:
+                bot.sendMessage(telegram_uid, message)
+            bot.sendMessage(telegram_uid,"Your Telegram ID is: " + str(msg['from']['id']))
 
 if __name__ == "__main__":
 
