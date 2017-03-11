@@ -6,6 +6,7 @@ import telepot
 from telepot.delegate import pave_event_space, per_chat_id, create_open
 from time import sleep
 from subprocess import call
+import os
 
 welcome_messages = [
     "Oh, hey there!",
@@ -22,10 +23,10 @@ account.",
 Telegram User ID under the Pager field, in Generic settings."
 ]
 
-API_KEY        = "Secret API key goes here"
+API_KEY        = os.environ['TELEGRAM_BOT_API_KEY']
 ldap_server    = "ldap.tolabaki.gr"
 ldap_user      = "cn=agent,dc=tolabaki,dc=gr"
-ldap_password  = "Secret LDAP password goes here"
+ldap_password  = os.environ['LDAP_PASSWORD']
 search_base    = "dc=tolabaki,dc=gr"
 allowed_users  = "objectClass=person"
 telegram_uid_field = "pager"
