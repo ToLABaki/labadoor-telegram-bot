@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from ldap3 import Server, Connection, ALL
+from ldap3.protocol.formatters.formatters import format_integer
 import telepot
 from telepot.delegate import pave_event_space, per_chat_id, create_open
 from telepot.namedtuple import ReplyKeyboardMarkup, ReplyKeyboardHide
