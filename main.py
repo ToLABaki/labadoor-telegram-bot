@@ -21,6 +21,13 @@ account.",
 Telegram User ID under the Fax field, in Generic settings."
 ]
 
+API_KEY        = "Secret API key goes here"
+ldap_server    = "ldap.tolabaki.gr"
+ldap_user      = "cn=agent,dc=tolabaki,dc=gr"
+ldap_password  = "Secret LDAP password goes here"
+search_base    = "dc=tolabaki,dc=gr"
+allowed_users  = "objectClass=person"
+
 class Logic(telepot.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
         super(Logic, self).__init__(*args, **kwargs)
