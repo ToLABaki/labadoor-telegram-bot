@@ -6,12 +6,6 @@ import telepot
 from telepot.delegate import pave_event_space, per_chat_id, create_open
 from telepot.namedtuple import ReplyKeyboardMarkup, ReplyKeyboardHide
 from time import sleep
-import peewee
-from peewee import Model, IntegerField, BooleanField, CharField
-from api_key import API_KEY
-from exceptions import *
-from labatoken import Labatoken
-from labaperson import Labaperson
 
 DB_PATH = 'stuff.db'
 
