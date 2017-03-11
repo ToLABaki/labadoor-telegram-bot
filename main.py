@@ -6,8 +6,6 @@ import telepot
 from telepot.delegate import pave_event_space, per_chat_id, create_open
 from time import sleep
 
-DB_PATH = 'stuff.db'
-
 welcome_messages = [
     "Oh, hey there!",
     "This bot helps us open the door at τοLabάκι hackerspace.",
@@ -22,22 +20,6 @@ account.",
         "In order to do that, visit https://accounts.tolabaki.gr and add your \
 Telegram User ID under the Fax field, in Generic settings."
 ]
-db = peewee.SqliteDatabase(DB_PATH)
-
-class Token(Model):
-    token = CharField()
-
-    class Meta:
-        database = db
-
-
-class User(Model):
-    uid = IntegerField()
-    admin = BooleanField()
-
-    class Meta:
-        database = db
-
 
 class Logic(telepot.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
