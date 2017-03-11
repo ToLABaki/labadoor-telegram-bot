@@ -5,6 +5,7 @@ from ldap3.protocol.formatters.formatters import format_integer
 import telepot
 from telepot.delegate import pave_event_space, per_chat_id, create_open
 from time import sleep
+from subprocess import call
 
 welcome_messages = [
     "Oh, hey there!",
@@ -18,7 +19,7 @@ registration_instructions = [
         "To open the door, you need to add your Telegram user id to your LDAP \
 account.",
         "In order to do that, visit https://accounts.tolabaki.gr and add your \
-Telegram User ID under the Fax field, in Generic settings."
+Telegram User ID under the Pager field, in Generic settings."
 ]
 
 API_KEY        = "Secret API key goes here"
@@ -27,6 +28,12 @@ ldap_user      = "cn=agent,dc=tolabaki,dc=gr"
 ldap_password  = "Secret LDAP password goes here"
 search_base    = "dc=tolabaki,dc=gr"
 allowed_users  = "objectClass=person"
+telegram_uid_field = "pager"
+doorlock_bin   = "/usr/local/bin/doorlock"
+
+server = Server(ldap_server, use_ssl=True)
+conn = Connection(server, ldap_user, ldap_password)
+conn.bind()
 
 class Logic(telepot.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
@@ -45,6 +52,20 @@ class Logic(telepot.helper.ChatHandler):
             for message in registration_instructions[0:2]:
                 bot.sendMessage(telegram_uid, message)
             bot.sendMessage(telegram_uid,"Your Telegram ID is: " + str(msg['from']['id']))
+        elif msg['text'] == "/open":
+            conn.search(search_base, "(&(" + allowed_users + ")(" +
+                    telegram_uid_field + "=*))",
+                    attributes=[telegram_uid_field])
+            found = False
+            for user in conn.entries:
+                field_value = int(format_integer(user[telegram_uid_field])[0])
+                if field_value == telegram_uid:
+                    bot.sendMessage(telegram_uid, "Open Sesame!")
+                    call([doorlock_bin])
+                    found = True
+            if found == False:
+                bot.sendMessage(telegram_uid,
+                        "You need to /register in order to open the door!")
 
 if __name__ == "__main__":
 
