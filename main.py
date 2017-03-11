@@ -29,6 +29,11 @@ class Logic(telepot.helper.ChatHandler):
     # Don't change function name, it is recognized by default from telepot.
     def on_chat_message(self, msg):
         telegram_uid = msg['from']['id']
+        if msg['text'] == "/start":
+            for message in welcome_messages[0:4]:
+                bot.sendMessage(telegram_uid, message)
+                sleep(3)
+            bot.sendMessage(telegram_uid, welcome_messages[4])
 
 if __name__ == "__main__":
 
