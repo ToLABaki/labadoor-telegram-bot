@@ -4,28 +4,9 @@ from ldap3 import Server, Connection, ALL
 from ldap3.protocol.formatters.formatters import format_integer
 import telepot
 from telepot.delegate import pave_event_space, per_chat_id, create_open
-from telepot.namedtuple import ReplyKeyboardMarkup, ReplyKeyboardHide
 from time import sleep
 
 DB_PATH = 'stuff.db'
-
-keyboard_user = ReplyKeyboardMarkup(keyboard=[
-    ['/open'],
-    ['/gettoken', '/deltoken']
-    ])
-
-keyboard_admin = ReplyKeyboardMarkup(keyboard=[
-    ['/open', '/users', '/tokens'],
-    ['/gettoken', '/deltoken'],
-    ['/adduser', '/deluser'],
-    ['/lock', '/unlock']
-    ])
-
-keyboard_guest = ReplyKeyboardMarkup(keyboard=[
-    ['/open']
-    ])
-
-keyboard_hide = ReplyKeyboardHide(hide_keyboard=True)
 
 str_guestoops = 'Oops, you\'re a guest so you must send me a password now'
 str_heresatoken = 'This code will allow a friend to open the door one time:'
